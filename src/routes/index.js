@@ -1,6 +1,9 @@
 const express = require('express')
-const router = express.Router()
 const scraper = require('../scraper/index')
+const modelar = require('../configModel/modelar')
+const percent = require('../configModel/percent')
+const router = express.Router()
+
 
 router.post('', async (req, res) => {
     //Obtiene el usuario y la contraseña
@@ -8,7 +11,10 @@ router.post('', async (req, res) => {
     const password = req.body.password
     //Llama al scraper
     const data = await scraper(user, password)
-    console.log(data)
+    //Trae la data en un mejor formato
+    const updateData = modelar(data.infoMateria)
+    //Porcentaje de las materias cursadas
+    console.log(`Porcentaje cursado : ${percent(updateData)}`)
     res.json(data)
 })
 
