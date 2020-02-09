@@ -12,14 +12,17 @@ router.post('', async (req, res) => {
     //Llama al scraper
     const data = await scraper(user, password)
     //Trae la data en un mejor formato
-    const updateData = modelar(data.infoMateria)
-    //Porcentaje de las materias cursadas
-    console.log(`Porcentaje cursado : ${percent(updateData)}`)
-    res.json(data)
-})
+    const updateData = modelar(data.tableSubjects)
+   
 
-router.get('/', (req, res)=>{
-   res.send('Obvio bobis')
+    const response = {
+        state: data.state,
+        name: data.name,
+        period: data.period,
+        percent: percent(updateData),
+        tableSubjects: updateData
+    }
+    res.json(response)
 })
 
 

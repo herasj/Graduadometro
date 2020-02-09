@@ -4,7 +4,7 @@ const main = async (user, pass) => {
 
     //Configuración incial
     const url = 'https://pomelo.uninorte.edu.co/pls/prod/twbkwbis.P_WWWLogin'
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle0' })
 
@@ -75,11 +75,11 @@ const main = async (user, pass) => {
     const cumplimiento = await page.$$eval('.datadisplaytable', table => table.map(data => {
         const cumplimiento = []
         for (let i = 2; i < data.rows.length - 1; i++) {
-            const semestre = data.rows[0].innerText.split('\t')[1]
+            const semester = data.rows[0].innerText.split('\t')[1]
             cumplimiento.push({
-                semestre: semestre.split('Sem')[0] + 'Semestre',
-                materia: data.rows[i].innerText.split('\t')[3],
-                cumplido: data.rows[i].innerText.split('\t')[0]
+                semester: semester.split('Sem')[0] + 'Semestre',
+                subject: data.rows[i].innerText.split('\t')[3],
+                completed: data.rows[i].innerText.split('\t')[0]
             })
 
         }
@@ -88,25 +88,25 @@ const main = async (user, pass) => {
     }))
 
     //Elimina ingles de las materias
-    const tableMateria = []
+    const tableSubjects = []
     for (let i = 2; i < cumplimiento.length; i++) {
         const size = cumplimiento[i].length
         if (size == 1) {
-            if (cumplimiento[i][0].materia.indexOf('EXIGENCIA INGLES') == -1) {
-                tableMateria.push(cumplimiento[i])
+            if (cumplimiento[i][0].subject.indexOf('EXIGENCIA INGLES') == -1) {
+                tableSubjects.push(cumplimiento[i])
             }
         } else {
-            tableMateria.push(cumplimiento[i])
+            tableSubjects.push(cumplimiento[i])
         }
     }
     browser.close()
 
     //Retorna los datos
     return {
-        estate: estate,
+        state: estate.split(':')[1],
         name: name.split(',')[1],
         period: period,
-        infoMateria: tableMateria
+        tableSubjects: tableSubjects
     }
 
 };
